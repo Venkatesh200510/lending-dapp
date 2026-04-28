@@ -1,12 +1,12 @@
 const hre = require("hardhat");
 
 async function main() {
-  const Lending = await hre.ethers.getContractFactory("Lending");
-  const lending = await Lending.deploy();
+  const P2PLending = await hre.ethers.getContractFactory("P2PLending");
+  const lending = await P2PLending.deploy();
 
-  await lending.deployed();
+  await lending.waitForDeployment();
 
-  console.log("Contract deployed to:", lending.address);
+  console.log("Contract deployed to:", await lending.getAddress());
 }
 
 main().catch((error) => {

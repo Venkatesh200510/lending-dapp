@@ -1,44 +1,60 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-contract Lending {
+contract P2PLending {
 
-    mapping(address => uint) public deposits;
-    mapping(address => uint) public loans;
-
-    uint public collateralRatio = 150; // 150%
-
-    // Deposit ETH (LENDER)
-    function deposit() public payable {
-        deposits[msg.sender] += msg.value;
+    struct Loan {
+        uint id;
+        address borrower;
+        address lender;
+        uint amount;
+        uint interest;
+        bool funded;
+        bool repaid;
     }
 
-    // Borrow ETH (BORROWER)
-    function borrow(uint amount) public payable {
-        require(msg.value * 100 >= amount * collateralRatio, "Not enough collateral");
+    Loan[] public loans;
 
-        loans[msg.sender] += amount;
-        payable(msg.sender).transfer(amount);
+    function createLoan(uint amount, uint interest) public {
+        loans.push(Loan({
+            id: loans.length,
+            borrower: msg.sender,
+            lender: address(0),
+            amount: amount,
+            interest: interest,
+            funded: false,
+            repaid: false
+        }));
     }
 
-    // Repay loan
-    function repay() public payable {
-        require(loans[msg.sender] > 0, "No loan");
+    function fundLoan(uint id) public payable {
+        Loan storage loan = loans[id];
 
-        loans[msg.sender] -= msg.value;
+        require(!loan.funded, "Already funded");
+        require(msg.value == loan.amount, "Wrong amount");
+
+        loan.lender = msg.sender;
+        loan.funded = true;
+
+        payable(loan.borrower).transfer(msg.value);
     }
 
-    // Withdraw deposit (only if no active loan)
-    function withdraw(uint amount) public {
-        require(deposits[msg.sender] >= amount, "Insufficient balance");
-        require(loans[msg.sender] == 0, "Loan not repaid");
+    function repayLoan(uint id) public payable {
+        Loan storage loan = loans[id];
 
-        deposits[msg.sender] -= amount;
-        payable(msg.sender).transfer(amount);
+        require(msg.sender == loan.borrower, "Not borrower");
+        require(loan.funded, "Not funded");
+        require(!loan.repaid, "Already repaid");
+
+        uint total = loan.amount + loan.interest;
+        require(msg.value == total, "Incorrect repayment");
+
+        loan.repaid = true;
+
+        payable(loan.lender).transfer(msg.value);
     }
 
-    // Contract balance
-    function getBalance() public view returns (uint) {
-        return address(this).balance;
+    function getLoans() public view returns (Loan[] memory) {
+        return loans;
     }
 }
