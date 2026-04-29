@@ -1,4 +1,7 @@
-To run this program
+<p>The Decentralized Lending System is a blockchain-based application that enables users to lend and borrow funds directly without the involvement of a central authority such as a bank. Traditional lending systems rely on intermediaries to manage transactions, verify users, and enforce rules. These centralized systems often involve delays, high fees, and limited transparency</p>
+<hr>
+
+<h1> To run this program </h1>
 
 1. Clone the project
    -> git clone https://github.com/Venkatesh200510/lending-dapp.git
@@ -16,9 +19,9 @@ To run this program
 3. For Frontend (Reacts.js) in new terminal
    -> cd frontend
 
--> npm install
+   -> npm install
 
--> npm start
+   -> npm start
 
 <strong>imp: If not installed correctly </strong>
 
@@ -32,12 +35,12 @@ To run this program
  
  In MetaMask application you can see navigation bar 
  click on it and navigate to Networks -> Add custom networks
-
-Network name : Hardhat Local
-Default RPC URL : http://localhost:8545
-Chain ID : 31337
-Currency symbol : ETH
-
+<ul>
+<li>Network name : Hardhat Local</li>
+<li>Default RPC URL : http://localhost:8545</li>
+<li>Chain ID : 31337</li>
+<li>Currency symbol : ETH</li>
+</ul>
 After adding new network
 click on Accounts -> Add Wallets -> Import an account
 Enter the private key which is copied during first step
